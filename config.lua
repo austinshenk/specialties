@@ -1,0 +1,1 @@
+enable_item_drop=true
