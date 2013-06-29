@@ -142,7 +142,10 @@ for name, def in pairs(minetest.registered_tools) do
 			if(specialties.skills[skill].tool ~= "") then
 				if(name:find(specialties.skills[skill].tool) ~= nil and special ~= {}) then
 					local toolname = "specialties"..name:sub(colonpos).."_"..special.name
-					local newdef = def
+					local newdef = {}
+					for k,v in pairs(def) do
+						newdef[k] = v
+					end
 					newdef.description = def.description.." "..special.description
 					newdef.inventory_image = def.inventory_image.."^specialties_"..special.name..".png"
 					newdef.wield_image = def.inventory_image.."^specialties_"..special.name..".png"
