@@ -1,4 +1,2 @@
 default
-inventory_plus
 farming
-moreores

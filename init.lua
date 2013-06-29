@@ -10,7 +10,7 @@ time = 0
 
 local get_specialInfo = function(player, specialty)
     local formspec = "size[8,8]" -- size of the formspec page
-	.."button[0,0;2,0.5;main;Back]" -- back to main inventory
+	.."button_exit[0,0;0.75,0.5;close;X]" -- back to main inventory
 	.."button[2,0;2,0.5;miner;Miner]"
 	.."button[2,.75;2,0.5;lumberjack;Lumberjack]"
 	.."button[2,1.5;2,0.5;digger;Digger]"
@@ -36,8 +36,13 @@ end)
 
 --Initial XP Extraction
 --optimizes the amount of calls to files
+minetest.register_chatcommand("spec", {
+	description = "Show Specialties menu",
+	func = function(name, param)
+		minetest.show_formspec(name, "specialties:spec", get_specialInfo(minetest.get_player_by_name(name), ""))
+	end,
+})
 minetest.register_on_joinplayer(function(player)
-	inventory_plus.register_button(player,"specialties","Specialties")
 	player:get_inventory():set_size("pick", 1)
 	player:get_inventory():set_size("axe", 1)
 	player:get_inventory():set_size("shovel", 1)
@@ -50,32 +55,38 @@ minetest.register_on_joinplayer(function(player)
 		specialties.players[name][skill] = specialties.readXP(name, skill)
 	end
 end)
+local function show_formspec(player, specialty)
+	minetest.show_formspec(player, "specialties:spec", get_specialInfo(minetest.get_player_by_name(player), specialty))
+end
 
 --Skill Events
 local function healTool(player, list, specialty, cost)
 	tool = player:get_inventory():get_list(list)[1]
-	if (tool:get_name():find(":"..list) ~= nil and tool:get_wear() ~= 0 and specialties.healAmount[tool:get_name()] ~= nil)then
-		if (specialties.changeXP(player:get_player_name(), specialty, -cost)) then
+	if tool:get_name():find(":"..list) == nil then return end
+	if tool:get_wear() ~= 0 and specialties.healAmount[tool:get_name()] ~= nil then
+		if specialties.changeXP(player:get_player_name(), specialty, -cost) then
 			tool:add_wear(-specialties.healAmount[tool:get_name()])
 			player:get_inventory():set_stack(list, 1, tool)
 		end
 	end
-	inventory_plus.set_inventory_formspec(player, get_specialInfo(player, specialty))
+	show_formspec(player:get_player_name(), specialty)
 end
 local function upgradeTool(player, list, specialty, cost)
 	tool = player:get_inventory():get_list(list)[1]
-	if(tool:get_name():find(":"..list) ~= nil and specialties.upgradeTree[tool:get_name()] ~= nil) then
-		if (specialties.changeXP(player:get_player_name(), specialty, -cost)) then
+	if tool:get_name():find(":"..list) == nil then return end
+	if specialties.upgradeTree[tool:get_name()] ~= nil then
+		if specialties.changeXP(player:get_player_name(), specialty, -cost) then
 			player:get_inventory():set_stack(list, 1, specialties.upgradeTree[tool:get_name()])
 		end
 	end
-	inventory_plus.set_inventory_formspec(player, get_specialInfo(player, specialty))
+	show_formspec(player:get_player_name(), specialty)
 end
 local function addSpecial2Tool(player, skill, list, specialty, cost)
 	local tool = player:get_inventory():get_list(list)[1]
 	local toolname = tool:get_name()
-	if(toolname:find("_"..skill) ~= nil) then return end
-	if (specialties.changeXP(player:get_player_name(), specialty, -cost)) then
+	if toolname:find(":"..list) == nil then return end
+	if toolname:find("_"..skill) ~= nil then return end
+	if specialties.changeXP(player:get_player_name(), specialty, -cost) then
 		local def = tool:get_definition()
 		local colonpos = toolname:find(":")
 		local modname = toolname:sub(0,colonpos-1)
@@ -83,7 +94,7 @@ local function addSpecial2Tool(player, skill, list, specialty, cost)
 		local name = toolname.."_"..skill
 		player:get_inventory():set_stack(list, 1, name)
 	end
-	inventory_plus.set_inventory_formspec(player, get_specialInfo(player, specialty))
+	show_formspec(player:get_player_name(), specialty)
 end
 local function doTransfer(player, list, factor)
 	
@@ -92,13 +103,13 @@ end
 --GUI Events
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if fields.specialties then
-		inventory_plus.set_inventory_formspec(player, get_specialInfo(player, ""))
+		show_formspec(player:get_player_name(), "")
 		return
 	end
 
 	--MINER
 	if fields.miner then
-		inventory_plus.set_inventory_formspec(player, get_specialInfo(player, "miner"))
+		show_formspec(player:get_player_name(), "miner")
 		return
 	end
 	if fields.healpick then healTool(player, "pick", "miner", 100) end
@@ -107,7 +118,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 	--LUMBERJACK
 	if fields.lumberjack then
-		inventory_plus.set_inventory_formspec(player, get_specialInfo(player, "lumberjack"))
+		show_formspec(player:get_player_name(), "lumberjack")
 		return
 	end
 	if fields.healaxe then healTool(player, "axe", "lumberjack", 100) end
@@ -116,7 +127,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 	--DIGGER
 	if fields.digger then
-		inventory_plus.set_inventory_formspec(player, get_specialInfo(player, "digger"))
+		show_formspec(player:get_player_name(), "digger")
 		return
 	end
 	if fields.healshovel then healTool(player, "shovel", "digger", 100) end
@@ -125,7 +136,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	
 	--FARMER
 	if fields.farmer then
-		inventory_plus.set_inventory_formspec(player, get_specialInfo(player, "farmer"))
+		show_formspec(player:get_player_name(), "farmer")
 		return
 	end
 	if fields.healhoe then healTool(player, "hoe", "farmer", 100) end
@@ -134,12 +145,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	
 	--BUILDER
 	if fields.builder then
-		inventory_plus.set_inventory_formspec(player, get_specialInfo(player, "builder"))
+		show_formspec(player:get_player_name(), "builder")
 		return
 	end
 	if fields.dorefill then doTransfer(player, "refill", 1) end
 	if fields.dotrash then doTransfer(player, "trash", -1) end
 end)
+
 
 
 --XP Events
