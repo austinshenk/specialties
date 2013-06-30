@@ -9,17 +9,22 @@ specialties.skills["miner"] = {menu="button[4.5,1;3,0.5;healpick;(100)Heal Pick]
 			"button[4.5,1.5;3,0.5;upgradepick;(200)Upgrade Pick]"..
 			"button[4.5,2;3,0.5;superheatpick;(500)Super Heat]"..
 			"list[current_player;pick;5.5,0;1,1;]",
-					specials={{name="superheat", description="Super Heat"}}, tool="pick"}
+					specials={{name="superheat", description="Super Heat"}},
+					tool="pick"}
 specialties.skills["lumberjack"] = {menu="button[4.5,1;3,0.5;healaxe;(100)Heal Axe]"..
 			"button[4.5,1.5;3,0.5;upgradeaxe;(200)Upgrade Axe]"..
 			"button[4.5,2;3,0.5;superheataxe;(500)Super Heat]"..
+			"button[4.5,2.5;3,0.5;felleraxe;(750)Feller]"..
 			"list[current_player;axe;5.5,0;1,1;]",
-					specials={{name="superheat", description="Super Heat"}}, tool="axe"}
+					specials={{name="superheat", description="Super Heat"},
+							  {name="feller",    description="Feller"}},
+					tool="axe"}
 specialties.skills["digger"] = {menu="button[4.5,1;3,0.5;healshovel;(100)Heal Shovel]"..
 			"button[4.5,1.5;3,0.5;upgradeshovel;(200)Upgrade Shovel]"..
 			"button[4.5,2;3,0.5;superheatshovel;(500)Super Heat]"..
 			"list[current_player;shovel;5.5,0;1,1;]",
-					specials={{name="superheat", description="Super Heat"}}, tool="shovel"}
+					specials={{name="superheat", description="Super Heat"}},
+					tool="shovel"}
 specialties.skills["builder"] = {menu="list[current_player;buildrefill;4.5,1;1,1;]"..
 			"field[4.875,2.5;1,.5;refillamount;;1]"..
 			"button[4.5,3;1,0.5;dorefill;Refill]"..
@@ -32,13 +37,15 @@ specialties.skills["farmer"] = {menu="button[4.5,1;3,0.5;healhoe;(100)Heal Hoe]"
 			"button[4.5,1.5;3,0.5;upgradehoe;(200)Upgrade Hoe]"..
 			"button[4.5,2;3,0.5;greenthumb;(500)Green Thumb]"..
 			"list[current_player;hoe;5.5,0;1,1;]",
-					specials={{name="greenthumb", description="Green Thumb"}}, tool="hoe"}
+					specials={{name="greenthumb", description="Green Thumb"}},
+					tool="hoe"}
 end
 
 specialties.hoewear = {}
 specialties.hoewear["wood"] = 30
-specialties.hoewear["stone"] = 50
-specialties.hoewear["steel"] = 80
+specialties.hoewear["stone"] = 90
+specialties.hoewear["steel"] = 200
+specialties.hoewear["bronze"] = 220
 
 --Amount to heal each type of tool
 --mod support
@@ -46,13 +53,21 @@ specialties.healAmount = {}
 specialties.healAmount["default:pick_wood"] = 40000
 specialties.healAmount["default:pick_stone"] = 30000
 specialties.healAmount["default:pick_steel"] = 20000
+specialties.healAmount["default:pick_bronze"] = 17000
 specialties.healAmount["default:pick_mese"] = 10000
-specialties.healAmount["default:axe_wood"] = 30000
-specialties.healAmount["default:axe_stone"] = 20000
-specialties.healAmount["default:axe_steel"] = 10000
-specialties.healAmount["default:shovel_wood"] = 30000
-specialties.healAmount["default:shovel_stone"] = 20000
-specialties.healAmount["default:shovel_steel"] = 10000
+specialties.healAmount["default:pick_diamond"] = 8000
+specialties.healAmount["default:axe_wood"] = 40000
+specialties.healAmount["default:axe_stone"] = 30000
+specialties.healAmount["default:axe_steel"] = 20000
+specialties.healAmount["default:axe_bronze"] = 17000
+specialties.healAmount["default:axe_mese"] = 10000
+specialties.healAmount["default:axe_diamond"] = 8000
+specialties.healAmount["default:shovel_wood"] = 40000
+specialties.healAmount["default:shovel_stone"] = 30000
+specialties.healAmount["default:shovel_steel"] = 20000
+specialties.healAmount["default:shovel_bronze"] = 17000
+specialties.healAmount["default:shovel_mese"] = 10000
+specialties.healAmount["default:shovel_diamond"] = 8000
 specialties.healAmount["moreores:pick_bronze"] = 20000
 specialties.healAmount["moreores:pick_silver"] = 32000
 specialties.healAmount["moreores:pick_gold"] = 40000
@@ -68,17 +83,26 @@ specialties.healAmount["moreores:shovel_mithril"] = 14000
 specialties.healAmount["farming:hoe_wood"] = 40000
 specialties.healAmount["farming:hoe_stone"] = 30000
 specialties.healAmount["farming:hoe_steel"] = 20000
+specialties.healAmount["farming:hoe_bronze"] = 20000
 
 --List of tools that can be upgraded into a better one
 --mod support
 specialties.upgradeTree = {}
 specialties.upgradeTree["default:pick_wood"] = "default:pick_stone"
 specialties.upgradeTree["default:pick_stone"] = "default:pick_steel"
-specialties.upgradeTree["default:pick_steel"] = "default:pick_mese"
+specialties.upgradeTree["default:pick_steel"] = "default:pick_bronze"
+specialties.upgradeTree["default:pick_bronze"] = "default:pick_mese"
+specialties.upgradeTree["default:pick_mese"] = "default:pick_diamond"
 specialties.upgradeTree["default:axe_wood"] = "default:axe_stone"
 specialties.upgradeTree["default:axe_stone"] = "default:axe_steel"
+specialties.upgradeTree["default:axe_steel"] = "default:axe_bronze"
+specialties.upgradeTree["default:axe_bronze"] = "default:axe_mese"
+specialties.upgradeTree["default:axe_mese"] = "default:axe_diamond"
 specialties.upgradeTree["default:shovel_wood"] = "default:shovel_stone"
 specialties.upgradeTree["default:shovel_stone"] = "default:shovel_steel"
+specialties.upgradeTree["default:shovel_steel"] = "default:shovel_bronze"
+specialties.upgradeTree["default:shovel_bronze"] = "default:shovel_mese"
+specialties.upgradeTree["default:shovel_mese"] = "default:shovel_diamond"
 specialties.upgradeTree["moreores:pick_bronze"] = "moreores:pick_silver"
 specialties.upgradeTree["moreores:pick_silver"] = "moreores:pick_gold"
 specialties.upgradeTree["moreores:pick_gold"] = "moreores:pick_mithril"
@@ -90,6 +114,7 @@ specialties.upgradeTree["moreores:axe_silver"] = "moreores:axe_gold"
 specialties.upgradeTree["moreores:axe_gold"] = "moreores:axe_mithril"
 specialties.upgradeTree["farming:hoe_wood"] = "farming:hoe_stone"
 specialties.upgradeTree["farming:hoe_stone"] = "farming:hoe_steel"
+specialties.upgradeTree["farming:hoe_steel"] = "farming:hoe_bronze"
 
 --List of amounts used to calculate the xp required for transfer
 specialties.transferAmount = {}
