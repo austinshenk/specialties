@@ -29,7 +29,7 @@ if(itemDrop ~= "" and itemDrop ~= nil) then
 		
 	end
 	io.close()
-	local file = io.open(technic.."/item_drop.lua", "w")
+	local file = io.open(itemDrop.."/item_drop.lua", "w")
 	file:write(newfile)
 	io.flush()
 	io.close()
