@@ -5,7 +5,7 @@ if(itemDrop ~= "" and itemDrop ~= nil) then
 	local code = "local tool = digger:get_wielded_item():get_name()\n"..
 			"if(tool:find('superheat') ~= nil)then\n"..
 			"output = minetest.get_craft_result({method='cooking', items={name}})\n"..
-			"if(output.item ~= nil)then name = output.item:get_name()end\n"..
+			"if(not output.item:is_empty())then name = output.item:get_name()end\n"..
 			"end\n"
 	local readfile = io.open(itemDrop.."/init.lua", "r")
 	local newfile = ""
@@ -29,7 +29,7 @@ if(itemDrop ~= "" and itemDrop ~= nil) then
 		
 	end
 	io.close()
-	local file = io.open(itemDrop.."/item_drop.lua", "w")
+	local file = io.open(itemDrop.."/init.lua", "w")
 	file:write(newfile)
 	io.flush()
 	io.close()
