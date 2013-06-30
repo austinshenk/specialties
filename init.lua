@@ -24,7 +24,7 @@ local get_specialInfo = function(name, specialty)
 end
 
 minetest.register_on_leaveplayer(function(player)--Called if on a server, if single player than it isn't called
-	specialties.updateXP(player:get_player_name())
+	specialties.writeXP(player:get_player_name())
 end)
 
 --Initial XP Extraction
@@ -118,6 +118,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if fields.healaxe then healTool(player, "axe", "lumberjack", 100) end
 	if fields.upgradeaxe then upgradeTool(player, "axe", "lumberjack", 200) end
 	if fields.superheataxe then addSpecial2Tool(player, "superheat", "axe", "lumberjack", 500) end
+	if fields.felleraxe then addSpecial2Tool(player, "feller", "axe", "lumberjack", 750) end
 
 	--DIGGER
 	if fields.digger then
@@ -171,6 +172,7 @@ minetest.register_on_dignode(function(pos, oldnode, digger)
 				y = y+1
 				abovepos = {x=pos.x,y=pos.y+y,z=pos.z}
 			end
+			specialties.changeXP(name, "lumberjack", y-1)
 		end
 	end
 	if tool:find("shovel") ~= nil then
