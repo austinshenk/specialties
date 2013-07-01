@@ -234,6 +234,7 @@ for name, def in pairs(minetest.registered_tools) do
 					end
 					newdef.description = def.description.." "..special.description
 					newdef.inventory_image = def.inventory_image.."^specialties_"..special.name..".png"
+					newdef.wield_image = def.inventory_image.."^specialties_"..special.name..".png"
 					if(name:find(":hoe") ~= nil) then
 						newdef.on_use = function(itemstack, user, pointed_thing)
 							if pointed_thing.type == "nothing" or pointed_thing.type == "object" or pointed_thing.above == nil then return itemstack end
