@@ -1,8 +1,8 @@
 --File Manipulating
 specialties.writeXP = function(name)
 	local file = io.open(minetest.get_worldpath().."/"..name.."_XP", "w")
-	for skill,_ in pairs(specialties.players[name]) do
-		file:write(skill.." "..tostring(specialties.players[name][skill]).."\n")
+	for skill,num in pairs(specialties.players[name].skills) do
+		file:write(skill.." "..tostring(num).."\n")
 	end
 	file:close()
 end
@@ -29,9 +29,17 @@ end
 
 --Table Modification
 specialties.changeXP = function(name, specialty, amount)
-	local current = specialties.players[name][specialty]
-	if current+amount >= 0 then
-		specialties.players[name][specialty] = current+amount
+	local newAmount = specialties.players[name].skills[specialty]+amount
+	if newAmount >= 0 then
+		specialties.players[name].skills[specialty] = newAmount
+		local player = minetest.get_player_by_name(name)
+		local id = specialties.players[name].menu[specialty]
+		local hudItem = player:hud_get(id)
+		hudItem.text = tostring(newAmount)
+		hudItem.offset = {x=100, y=0}
+		hudItem.alignment = {x=1, y=0}
+		player:hud_remove(id)
+		specialties.players[name].menu[specialty] = player:hud_add(hudItem)
 		return true
 	else
 		return false
