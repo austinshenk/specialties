@@ -18,7 +18,7 @@ local get_specialInfo = function(name, specialty)
 	.."button[2,3;2,0.5;builder;Builder]"
 	.."list[current_player;main;0,4;8,4;]"
 	if(specialty ~= "") then
-		formspec = formspec.."label[4,0;XP: "..specialties.players[name][specialty].."]"..specialties.skills[specialty].menu
+		formspec = formspec.."label[4,0;XP: "..specialties.players[name].skills[specialty].."]"..specialties.skills[specialty].menu
     end
 	return formspec
 end
@@ -44,7 +44,33 @@ minetest.register_on_joinplayer(function(player)
 	player:get_inventory():set_size("buildtrash", 1)
 	name = player:get_player_name()
 	specialties.players[name] = {}
-	specialties.players[name] = specialties.readXP(name)
+	specialties.players[name].skills = {}
+	specialties.players[name].skills = specialties.readXP(name)
+	specialties.players[name].menu = {}
+	minetest.after(0.5, function()
+		local Yoffset = 0.02
+		local y = 0
+		for skill,num in pairs(specialties.players[name].skills) do
+			specialties.players[name].menu[skill] = player:hud_add({
+				hud_elem_type = "text",
+				position = {x=0, y=0.85+y},
+				offset = {x=100, y=0},
+				alignment = {x=1, y=0},
+				number = 0xFFFFFF ,
+				text = tostring(num),
+			})
+			player:hud_add({
+				hud_elem_type = "text",
+				position = {x=0, y=0.85+y},
+				offset = {x=10, y=0},
+				alignment = {x=1, y=0},
+				scale = {x=100, y=50},
+				number = 0xFFFFFF ,
+				text = skill,
+			})
+			y = y+Yoffset
+		end
+	end)
 end)
 local function show_formspec(name, specialty)
 	minetest.show_formspec(name, "specialties:spec", get_specialInfo(name, specialty))
