@@ -29,17 +29,19 @@ end
 
 --Table Modification
 specialties.changeXP = function(name, specialty, amount)
-	local newAmount = specialties.players[name].skills[specialty]+amount
+	local current = specialties.players[name].skills[specialty]
+	if current == nil then current = 0 end
+	local newAmount = current+amount
 	if newAmount >= 0 then
 		specialties.players[name].skills[specialty] = newAmount
 		local player = minetest.get_player_by_name(name)
-		local id = specialties.players[name].menu[specialty]
+		local id = specialties.players[name].hud[specialty]
 		local hudItem = player:hud_get(id)
 		hudItem.text = tostring(newAmount)
 		hudItem.offset = {x=100, y=0}
 		hudItem.alignment = {x=1, y=0}
 		player:hud_remove(id)
-		specialties.players[name].menu[specialty] = player:hud_add(hudItem)
+		specialties.players[name].hud[specialty] = player:hud_add(hudItem)
 		return true
 	else
 		return false
