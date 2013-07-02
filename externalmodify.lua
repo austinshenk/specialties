@@ -44,7 +44,7 @@ minetest.register_globalstep(function(dtime)
 			pos.y = pos.y+0.7
 			local inv = player:get_inventory()
 			
-			for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, 0.7)) do
+			for _,object in ipairs(minetest.get_objects_inside_radius(pos, 0.7)) do
 				if not object:is_player() and object:get_luaentity() and object:get_luaentity().name == "__builtin:item" then
 					if inv and inv:room_for_item("main", ItemStack(object:get_luaentity().itemstring)) then
 						inv:add_item("main", ItemStack(object:get_luaentity().itemstring))
@@ -60,7 +60,7 @@ minetest.register_globalstep(function(dtime)
 				end
 			end
 			
-			for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, 1.5)) do
+			for _,object in ipairs(minetest.get_objects_inside_radius(pos, 1.5)) do
 				if not object:is_player() and object:get_luaentity() and object:get_luaentity().name == "__builtin:item" then
 					if object:get_luaentity().collect then
 						if inv and inv:room_for_item("main", ItemStack(object:get_luaentity().itemstring)) then
@@ -114,7 +114,7 @@ end)
 end
 local function drop_items(pos, itemcount, itemname)
 	for i=1,itemcount do
-		local obj = minetest.env:add_item(pos, itemname)
+		local obj = minetest.add_item(pos, itemname)
 		if obj ~= nil then
 			obj:get_luaentity().collect = true
 			local x = math.random(1, 5)
@@ -246,14 +246,14 @@ for name, def in pairs(minetest.registered_tools) do
 							pos.y = (pointed_thing.above.y+pointed_thing.under.y)/2
 							pos.z = (pointed_thing.above.z+pointed_thing.under.z)/2
 							pos.y = pos.y-.5
-							local node = minetest.env:get_node(pos)
+							local node = minetest.get_node(pos)
 							if(nodeIsPlant(node)) then
-								minetest.env:dig_node(pos)
+								minetest.dig_node(pos)
 								if(not enable_item_drop) then
 									minetest.handle_node_drops(user:getpos(), minetest.get_node_drops(node.name, toolname), user)
 								end
 								if(node.name:find("weed") == nil) then
-									minetest.env:set_node(pos, {name = node.name.."_1"})
+									minetest.set_node(pos, {name = node.name.."_1"})
 								end
 								itemstack:add_wear(65535/specialties.hoewear[name:sub(name:find("_")+1)])
 								return itemstack
