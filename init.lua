@@ -46,12 +46,12 @@ minetest.register_on_joinplayer(function(player)
 	specialties.players[name] = {}
 	specialties.players[name].skills = {}
 	specialties.players[name].skills = specialties.readXP(name)
-	specialties.players[name].menu = {}
+	specialties.players[name].hud = {}
 	minetest.after(0.5, function()
 		local Yoffset = 0.02
 		local y = 0
 		for skill,num in pairs(specialties.players[name].skills) do
-			specialties.players[name].menu[skill] = player:hud_add({
+			specialties.players[name].hud[skill] = player:hud_add({
 				hud_elem_type = "text",
 				position = {x=0, y=0.85+y},
 				offset = {x=100, y=0},
