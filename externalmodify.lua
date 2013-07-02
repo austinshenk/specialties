@@ -1,7 +1,7 @@
 --Handle node drops to be compatible with the Technic node drops
 local itemDrop = minetest.get_modpath("item_drop")
 
-if(itemDrop ~= "" and itemDrop ~= nil) then
+if itemDrop then
 	local code = "local tool = digger:get_wielded_item():get_name()\n"..
 			"if(tool:find('superheat') ~= nil)then\n"..
 			"output = minetest.get_craft_result({method='cooking', items={name}})\n"..
