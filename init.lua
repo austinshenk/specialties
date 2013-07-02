@@ -1,23 +1,29 @@
 --run Files
-local modpath=minetest.get_modpath("specialties")
+local modpath = minetest.get_modpath("specialties")
 dofile(modpath.."/config.lua")
 dofile(modpath.."/tables.lua")
 dofile(modpath.."/externalmodify.lua")
 dofile(modpath.."/xp.lua")
 
+local iplus = minetest.get_modpath("inventory_plus")
+
 --variable used for time keeping for updating xp
-time = 0
+local time = 0
 
 local get_specialInfo = function(name, specialty)
-    local formspec = "size[8,8]" -- size of the formspec page
-	.."button_exit[0,0;0.75,0.5;close;X]" -- back to main inventory
-	.."button[2,0;2,0.5;miner;Miner]"
-	.."button[2,.75;2,0.5;lumberjack;Lumberjack]"
-	.."button[2,1.5;2,0.5;digger;Digger]"
-	.."button[2,2.25;2,0.5;farmer;Farmer]"
-	.."button[2,3;2,0.5;builder;Builder]"
-	.."list[current_player;main;0,4;8,4;]"
-	if(specialty ~= "") then
+    local formspec = "size[8,8]"..
+	"button[2,0;2,0.5;miner;Miner]"..
+	"button[2,.75;2,0.5;lumberjack;Lumberjack]"..
+	"button[2,1.5;2,0.5;digger;Digger]"..
+	"button[2,2.25;2,0.5;farmer;Farmer]"..
+	"button[2,3;2,0.5;builder;Builder]"..
+	"list[current_player;main;0,4;8,4;]"
+	if iplus then
+		formspec = formspec.."button[0,0;2,0.5;main;Back]"
+	else
+		formspec = formspec.."button_exit[0,0;0.75,0.5;close;X]"
+	end
+	if specialty ~= "" then
 		formspec = formspec.."label[4,0;XP: "..specialties.players[name].skills[specialty].."]"..specialties.skills[specialty].menu
     end
 	return formspec
@@ -42,6 +48,9 @@ minetest.register_on_joinplayer(function(player)
 	player:get_inventory():set_size("hoe", 1)
 	player:get_inventory():set_size("buildrefill", 1)
 	player:get_inventory():set_size("buildtrash", 1)
+	if iplus then
+		inventory_plus.register_button(player,"specialties","Specialties")
+	end
 	name = player:get_player_name()
 	specialties.players[name] = {}
 	specialties.players[name].skills = {}
@@ -122,6 +131,8 @@ end
 --GUI Events
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 	local name = player:get_player_name()
+	
+	--Inventory Plus support
 	if fields.specialties then
 		show_formspec(name, "")
 		return
