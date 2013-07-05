@@ -93,9 +93,12 @@ for name, def in pairs(minetest.registered_tools) do
 						local upgrade = uptool:sub(uptool:find(":"), #uptool)
 						specialties.upgradeTree[toolname] = "specialties"..upgrade.."_"..special.name
 					end
-					minetest.register_tool(toolname, newdef)
+					specialties.tools[toolname] = newdef
 				end
 			end
 		end
 	end
+end
+for toolname, def in pairs(specialties.tools) do
+	minetest.register_tool(toolname, def)
 end
