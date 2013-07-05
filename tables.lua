@@ -1,6 +1,7 @@
 --Other mods can use this table to check player's specialty levels
 specialties = {}
 specialties.players = {}
+specialties.tools = {}
 
 --The GUI used to display the skills of each specialty
 specialties.skills = {}
@@ -24,7 +25,8 @@ specialties.skills["digger"] = {menu="button[4.5,1;3,0.5;healshovel;(100)Heal Sh
 			"list[current_player;shovel;5.5,0;1,1;]",
 					specials={{name="superheat", description="Super Heat"}},
 					tool="shovel"}
-specialties.skills["builder"] = {menu="",
+specialties.skills["builder"] = {menu="button[4.5,1;3,0.5;grantfast;(600)Move Fast]"..
+			"button[4.5,1.5;3,0.5;grantfly;(800)Flying]",
 					specials={}, tool=""}
 if(minetest.get_modpath("farming") ~= nil or minetest.get_modpath("farming") ~= "") then
 specialties.skills["farmer"] = {menu="button[4.5,1;3,0.5;healhoe;(100)Heal Hoe]"..
