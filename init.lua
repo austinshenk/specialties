@@ -143,41 +143,63 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		show_formspec(name, "miner")
 		return
 	end
-	if fields.healpick then healTool(player, "pick", "miner", 100) end
-	if fields.upgradepick then upgradeTool(player, "pick", "miner", 200) end
-	if fields.superheatpick then addSpecial2Tool(player, "superheat", "pick", "miner", 500) end
+	if fields.healpick then healTool(player, "pick", "miner", 100) return end
+	if fields.upgradepick then upgradeTool(player, "pick", "miner", 200) return end
+	if fields.superheatpick then addSpecial2Tool(player, "superheat", "pick", "miner", 500) return end
 
 	--LUMBERJACK
 	if fields.lumberjack then
 		show_formspec(name, "lumberjack")
 		return
 	end
-	if fields.healaxe then healTool(player, "axe", "lumberjack", 100) end
-	if fields.upgradeaxe then upgradeTool(player, "axe", "lumberjack", 200) end
-	if fields.superheataxe then addSpecial2Tool(player, "superheat", "axe", "lumberjack", 500) end
-	if fields.felleraxe then addSpecial2Tool(player, "feller", "axe", "lumberjack", 750) end
+	if fields.healaxe then healTool(player, "axe", "lumberjack", 100) return end
+	if fields.upgradeaxe then upgradeTool(player, "axe", "lumberjack", 200) return end
+	if fields.superheataxe then addSpecial2Tool(player, "superheat", "axe", "lumberjack", 500) return end
+	if fields.felleraxe then addSpecial2Tool(player, "feller", "axe", "lumberjack", 750) return end
 
 	--DIGGER
 	if fields.digger then
 		show_formspec(name, "digger")
 		return
 	end
-	if fields.healshovel then healTool(player, "shovel", "digger", 100) end
-	if fields.upgradeshovel then upgradeTool(player, "shovel", "digger", 200) end
-	if fields.superheatshovel then addSpecial2Tool(player, "superheat", "shovel", "digger", 500) end
+	if fields.healshovel then healTool(player, "shovel", "digger", 100) return end
+	if fields.upgradeshovel then upgradeTool(player, "shovel", "digger", 200) return end
+	if fields.superheatshovel then addSpecial2Tool(player, "superheat", "shovel", "digger", 500) return end
 	
 	--FARMER
 	if fields.farmer then
 		show_formspec(name, "farmer")
 		return
 	end
-	if fields.healhoe then healTool(player, "hoe", "farmer", 100) end
-	if fields.upgradehoe then upgradeTool(player, "hoe", "farmer", 200) end
-	if fields.greenthumb then addSpecial2Tool(player, "greenthumb", "hoe", "farmer", 500) end
+	if fields.healhoe then healTool(player, "hoe", "farmer", 100) return end
+	if fields.upgradehoe then upgradeTool(player, "hoe", "farmer", 200) return end
+	if fields.greenthumb then addSpecial2Tool(player, "greenthumb", "hoe", "farmer", 500) return end
 	
 	--BUILDER
 	if fields.builder then
 		show_formspec(name, "builder")
+		return
+	end
+	if fields.grantfast then
+		if specialties.changeXP(name, "builder", -600) then
+			local privs = minetest.get_player_privs(name)
+			if privs.fast == false or privs.fast == nil then
+				privs.fast = true
+			end
+			minetest.set_player_privs(name, privs)
+			show_formspec(name, "builder")
+		end
+		return
+	end
+	if fields.grantfly then 
+		if specialties.changeXP(name, "builder", -800) then
+			local privs = minetest.get_player_privs(name)
+			if privs.fly == false or privs.fly == nil then
+				privs.fly = true
+			end
+			minetest.set_player_privs(name, privs)
+			show_formspec(name, "builder")
+		end
 		return
 	end
 end)
@@ -185,7 +207,9 @@ end)
 
 
 --XP Events
-minetest.register_on_dignode(function(pos, oldnode, digger)
+local node_dig = minetest.node_dig
+function minetest.node_dig(pos, oldnode, digger)
+	node_dig(pos, oldnode, digger)
 	if digger == nil then
 		return
 	end
@@ -216,10 +240,12 @@ minetest.register_on_dignode(function(pos, oldnode, digger)
 	if oldnode.name:find("farming") ~= nil then
 		specialties.changeXP(name, "farmer", 5)
 	end
-end)
-minetest.register_on_placenode(function(pos, newnode, placer, oldnode)
+end
+local place_node = minetest.item_place_node
+function minetest.item_place_node(itemstack, placer, pointed_thing)
+	place_node(itemstack, placer, pointed_thing)
 	specialties.changeXP(placer:get_player_name(), "builder", 1)
-end)
+end
 minetest.register_globalstep(function(dtime)
 	if time+dtime < 10 then
 		time = time+dtime
