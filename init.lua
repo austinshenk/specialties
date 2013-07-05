@@ -3,6 +3,8 @@ local modpath = minetest.get_modpath("specialties")
 dofile(modpath.."/config.lua")
 dofile(modpath.."/tables.lua")
 dofile(modpath.."/externalmodify.lua")
+dofile(modpath.."/nodes.lua")
+dofile(modpath.."/items.lua")
 dofile(modpath.."/xp.lua")
 
 local iplus = minetest.get_modpath("inventory_plus")
@@ -46,8 +48,9 @@ minetest.register_on_joinplayer(function(player)
 	player:get_inventory():set_size("axe", 1)
 	player:get_inventory():set_size("shovel", 1)
 	player:get_inventory():set_size("hoe", 1)
-	player:get_inventory():set_size("buildrefill", 1)
-	player:get_inventory():set_size("buildtrash", 1)
+	player:get_inventory():set_size("transferslotleft", 1)
+	player:get_inventory():set_size("transferslotright", 1)
+	player:get_inventory():set_size("transfergrid", 9)
 	if iplus then
 		inventory_plus.register_button(player,"specialties","Specialties")
 	end
@@ -124,9 +127,6 @@ local function addSpecial2Tool(player, skill, list, specialty, cost)
 	end
 	show_formspec(name, specialty)
 end
-local function doTransfer(player, list, factor)
-	
-end
 
 --GUI Events
 minetest.register_on_player_receive_fields(function(player, formname, fields)
@@ -180,8 +180,6 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		show_formspec(name, "builder")
 		return
 	end
-	if fields.dorefill then doTransfer(player, "refill", 1) end
-	if fields.dotrash then doTransfer(player, "trash", -1) end
 end)
 
 
