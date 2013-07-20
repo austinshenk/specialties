@@ -59,7 +59,7 @@ minetest.register_on_joinplayer(function(player)
 	specialties.players[name].skills = {}
 	specialties.players[name].skills = specialties.readXP(name)
 	specialties.players[name].hud = {}
-	minetest.after(0.5, function()
+	minetest.after(0.5, function(name)
 		local Yoffset = 0.02
 		local y = 0
 		for skill,num in pairs(specialties.players[name].skills) do
@@ -82,7 +82,8 @@ minetest.register_on_joinplayer(function(player)
 			})
 			y = y+Yoffset
 		end
-	end)
+	end,
+	name)
 end)
 local function show_formspec(name, specialty)
 	minetest.show_formspec(name, "specialties:spec", get_specialInfo(name, specialty))
