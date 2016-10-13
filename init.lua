@@ -244,8 +244,9 @@ function minetest.node_dig(pos, oldnode, digger)
 end
 local place_node = minetest.item_place_node
 function minetest.item_place_node(itemstack, placer, pointed_thing)
-	place_node(itemstack, placer, pointed_thing)
 	specialties.changeXP(placer:get_player_name(), "builder", 1)
+	-- minetest.item_place_node returns an itemstack back to user. Do not let it disappear.
+        return place_node(itemstack, placer, pointed_thing)
 end
 minetest.register_globalstep(function(dtime)
 	if time+dtime < 10 then
